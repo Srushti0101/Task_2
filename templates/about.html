@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block title %}About{% endblock %}
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* Use the page width instead of the small white card from base.html */
+    .container { max-width: 820px; background: none; padding: 0; }
+
+    .about {
+        --ink: #1f2a44;
+        --ink-soft: #b9c3dc;
+        --amber: #f2a541;
+        font-family: 'DM Sans', Arial, sans-serif;
+    }
+
+    /* Header */
+    .about-head {
+        background: var(--ink);
+        color: #fff;
+        border-radius: 20px;
+        padding: 48px 44px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(31, 42, 68, .15);
+    }
+    .about-head::after {
+        content: "";
+        position: absolute;
+        right: -60px; top: -60px;
+        width: 200px; height: 200px;
+        border-radius: 50%;
+        background: var(--amber);
+    }
+    .about-head h1 {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 2.4rem;
+        margin: 0 0 12px;
+        position: relative; z-index: 1;
+    }
+    .about-head p {
+        color: var(--ink-soft);
+        font-size: 1.05rem;
+        line-height: 1.65;
+        max-width: 520px;
+        margin: 0;
+        position: relative; z-index: 1;
+    }
+
+    /* Sections */
+    .panel {
+        background: #fff;
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-top: 20px;
+        box-shadow: 0 8px 24px rgba(31, 42, 68, .08);
+    }
+    .panel h2 {
+        font-family: 'Fraunces', Georgia, serif;
+        color: var(--ink);
+        font-size: 1.3rem;
+        margin: 0 0 16px;
+    }
+
+    /* What you will learn */
+    .learn { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .learn div {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #f3f5fa;
+        border-radius: 12px;
+        padding: 14px 16px;
+    }
+    .learn .icon {
+        width: 36px; height: 36px; flex: none;
+        border-radius: 10px;
+        background: #fdf0da;
+        display: grid; place-items: center;
+    }
+    .learn strong { display: block; color: var(--ink); font-weight: 600; }
+    .learn span.text { color: #5b6580; font-size: .9rem; line-height: 1.45; }
+
+    /* Tech stack */
+    .stack { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+        background: var(--ink);
+        color: #fff;
+        font-size: .9rem;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 999px;
+    }
+    .chip.alt { background: #fdf0da; color: #8a5a10; }
+
+    /* Call to action */
+    .cta { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .cta p { margin: 0; color: #5b6580; }
+    .cta strong { color: var(--ink); display: block; font-size: 1.05rem; }
+    .btn {
+        display: inline-block;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--amber);
+        border-radius: 12px;
+        padding: 14px 28px;
+        transition: transform .15s, box-shadow .15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(242, 165, 65, .45); }
+    .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+    @media (max-width: 640px) {
+        .about-head { padding: 36px 24px; }
+        .about-head h1 { font-size: 2rem; }
+        .panel { padding: 24px 20px; }
+        .learn { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .btn { transition: none; }
+    }
+</style>
+
+<div class="about">
+    <header class="about-head">
+        <h1>About this project</h1>
+        <p>This mini project was built to practice the core parts of Django: URLs, views, templates and models. It is a small task manager that brings them all together.</p>
+    </header>
+
+    <section class="panel">
+        <h2>What it covers</h2>
+        <div class="learn">
+            <div>
+                <span class="icon">⇄</span>
+                <span class="text"><strong>URLs</strong>Routing each page to the right view.</span>
+            </div>
+            <div>
+                <span class="icon">ƒ</span>
+                <span class="text"><strong>Views</strong>Handling requests and sending back responses.</span>
+            </div>
+            <div>
+                <span class="icon">▤</span>
+                <span class="text"><strong>Templates</strong>Reusing one layout across every page.</span>
+            </div>
+            <div>
+                <span class="icon">⛁</span>
+                <span class="text"><strong>Models</strong>Saving tasks in the database.</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Built with</h2>
+        <div class="stack">
+            <span class="chip">Python</span>
+            <span class="chip">Django</span>
+            <span class="chip">SQLite</span>
+            <span class="chip alt">HTML</span>
+            <span class="chip alt">CSS</span>
+        </div>
+    </section>
+
+    <section class="panel cta">
+        <p><strong>Ready to try it?</strong>Add your first task and see it in action.</p>
+        <a class="btn" href="{% url 'tasks' %}">Open my tasks</a>
+    </section>
+</div>
+{% endblock %}

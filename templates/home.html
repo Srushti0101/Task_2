@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* Use the page width instead of the small white card from base.html */
+    .container { max-width: 900px; background: none; padding: 0; }
+
+    .home {
+        --ink: #1f2a44;
+        --ink-soft: #b9c3dc;
+        --amber: #f2a541;
+        font-family: 'DM Sans', Arial, sans-serif;
+    }
+
+    /* Hero */
+    .hero {
+        background: var(--ink);
+        color: #fff;
+        border-radius: 20px;
+        padding: 64px 48px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(31, 42, 68, .15);
+    }
+    .hero::after {
+        content: "";
+        position: absolute;
+        right: -80px; bottom: -80px;
+        width: 280px; height: 280px;
+        border-radius: 50%;
+        background: var(--amber);
+    }
+    .hero h1 {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 2.8rem;
+        line-height: 1.1;
+        margin: 0 0 16px;
+        max-width: 520px;
+        position: relative; z-index: 1;
+    }
+    .hero p {
+        color: var(--ink-soft);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        max-width: 460px;
+        margin: 0 0 30px;
+        position: relative; z-index: 1;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; position: relative; z-index: 1; }
+
+    .btn {
+        display: inline-block;
+        font: inherit;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 12px;
+        padding: 14px 28px;
+        transition: transform .15s, box-shadow .15s;
+    }
+    .btn-primary { background: var(--amber); color: var(--ink); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(242, 165, 65, .45); }
+    .btn-ghost { color: #fff; border: 1.5px solid rgba(255, 255, 255, .4); }
+    .btn-ghost:hover { background: rgba(255, 255, 255, .1); }
+    .btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+    /* Feature cards */
+    .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 22px;
+    }
+    .feature {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(31, 42, 68, .08);
+    }
+    .feature .icon {
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        background: #fdf0da;
+        display: grid; place-items: center;
+        font-size: 1.2rem;
+        margin-bottom: 14px;
+    }
+    .feature h2 {
+        font-family: 'Fraunces', Georgia, serif;
+        color: var(--ink);
+        font-size: 1.15rem;
+        margin: 0 0 6px;
+    }
+    .feature p { color: #5b6580; line-height: 1.55; margin: 0; font-size: .95rem; }
+
+    @media (max-width: 760px) {
+        .hero { padding: 44px 26px; }
+        .hero h1 { font-size: 2.1rem; }
+        .features { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .btn { transition: none; }
+    }
+</style>
+
+<div class="home">
+    <section class="hero">
+        <h1>Keep your day organised, one task at a time</h1>
+        <p>A simple Django task manager. Add what you need to do, see it all in one list, and stay on top of your work.</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="{% url 'tasks' %}">Open my tasks</a>
+            <a class="btn btn-ghost" href="{% url 'about' %}">About this project</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <div class="icon">✎</div>
+            <h2>Add in seconds</h2>
+            <p>Type a task, press Add, and it goes straight to your list.</p>
+        </div>
+        <div class="feature">
+            <div class="icon">☰</div>
+            <h2>See everything</h2>
+            <p>Your newest tasks appear first, with the date you added them.</p>
+        </div>
+        <div class="feature">
+            <div class="icon">✉</div>
+            <h2>Get in touch</h2>
+            <p>Have feedback or an idea? <a href="{% url 'contact' %}" style="color: var(--ink); font-weight: 600;">Send us a message</a>.</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ task.title }}{% endblock %}
+{% block content %}
+<style>
+    .container { max-width: 620px; background: none; padding: 0; }
+    .detail { background: #fff; border-radius: 20px; padding: 36px; box-shadow: 0 20px 50px rgba(31,42,68,.15); font-family: Arial, sans-serif; }
+    .detail h1 { color: #1f2a44; margin: 0 0 8px; }
+    .detail .status { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: .85rem; font-weight: 600;
+                      background: #fdf0da; color: #8a5a10; }
+    .detail .status.done { background: #dff3e8; color: #1f7a4d; }
+    .detail p { color: #5b6580; line-height: 1.6; }
+    .detail .actions { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+    .detail a.back { color: #1f2a44; font-weight: 600; text-decoration: none; align-self: center; }
+    .detail button { font: inherit; font-weight: 600; border: none; border-radius: 10px; padding: 11px 20px; cursor: pointer; background: #f2a541; color: #1f2a44; }
+    .detail button.danger { background: #fde4e4; color: #a12626; }
+</style>
+
+<div class="detail">
+    <h1>{{ task.title }}</h1>
+    <span class="status {% if task.completed %}done{% endif %}">
+        {% if task.completed %}Done{% else %}Pending{% endif %}
+    </span>
+
+    <p>{{ task.description|default:"No description added." }}</p>
+    <p>Created on {{ task.created_at|date:"d M Y, h:i A" }}</p>
+
+    <div class="actions">
+        <form method="post" action="{% url 'task_toggle' task.id %}">
+            {% csrf_token %}
+            <button type="submit">{% if task.completed %}Mark as pending{% else %}Mark as done{% endif %}</button>
+        </form>
+        <form method="post" action="{% url 'task_delete' task.id %}">
+            {% csrf_token %}
+            <button class="danger" type="submit">Delete</button>
+        </form>
+        <a class="back" href="{% url 'tasks' %}">Back to tasks</a>
+    </div>
+</div>
+{% endblock %}

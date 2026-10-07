@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* Use the page width instead of the small white card from base.html */
+    .container { max-width: 720px; background: none; padding: 0; }
+
+    .tasks {
+        --ink: #1f2a44;
+        --ink-soft: #b9c3dc;
+        --field: #f3f5fa;
+        --line: #e3e7f1;
+        --amber: #f2a541;
+        --ok: #1f7a4d;
+        font-family: 'DM Sans', Arial, sans-serif;
+        border-radius: 20px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 20px 50px rgba(31, 42, 68, .15);
+    }
+
+    /* Header */
+    .tasks-head {
+        background: var(--ink);
+        color: #fff;
+        padding: 36px 36px 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    .tasks-head::after {
+        content: "";
+        position: absolute;
+        right: -50px; top: -50px;
+        width: 160px; height: 160px;
+        border-radius: 50%;
+        background: var(--amber);
+    }
+    .tasks-head h1 {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 2rem;
+        margin: 0 0 6px;
+        position: relative; z-index: 1;
+    }
+    .tasks-head p { margin: 0; color: var(--ink-soft); position: relative; z-index: 1; }
+
+    /* Add form */
+    .tasks-body { padding: 28px 36px 36px; }
+    .add-form { display: flex; gap: 10px; margin-bottom: 28px; }
+    .add-form input {
+        flex: 1;
+        min-width: 0;
+        font: inherit;
+        color: var(--ink);
+        background: var(--field);
+        border: 1.5px solid transparent;
+        border-radius: 12px;
+        padding: 14px 16px;
+        transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+    .add-form input::placeholder { color: #8a93a9; }
+    .add-form input:focus {
+        outline: none;
+        background: #fff;
+        border-color: var(--ink);
+        box-shadow: 0 0 0 4px rgba(242, 165, 65, .35);
+    }
+    .btn {
+        font: inherit;
+        font-weight: 600;
+        color: var(--ink);
+        background: var(--amber);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 26px;
+        cursor: pointer;
+        transition: transform .15s, box-shadow .15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(242, 165, 65, .45); }
+    .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+    /* List */
+    .list-title { color: var(--ink); font-weight: 600; margin: 0 0 12px; }
+    .task-list { list-style: none; margin: 0; padding: 0; }
+    .task {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 15px 16px;
+        border: 1.5px solid var(--line);
+        border-radius: 14px;
+        margin-bottom: 10px;
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .task:hover { border-color: var(--ink-soft); box-shadow: 0 4px 14px rgba(31, 42, 68, .08); }
+    .dot {
+        width: 22px; height: 22px; flex: none;
+        border-radius: 50%;
+        border: 2px solid var(--amber);
+        display: grid; place-items: center;
+        font-size: .75rem; color: #fff;
+    }
+    .task.done .dot { background: var(--ok); border-color: var(--ok); }
+    .task-text { flex: 1; min-width: 0; }
+    .task-text strong { display: block; color: var(--ink); font-weight: 500; word-break: break-word; }
+    .task.done .task-text strong { text-decoration: line-through; color: #8a93a9; }
+    .task-text small { color: #8a93a9; font-size: .8rem; }
+    .badge {
+        font-size: .78rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #fdf0da;
+        color: #8a5a10;
+        white-space: nowrap;
+    }
+    .task.done .badge { background: #dff3e8; color: var(--ok); }
+
+    /* Empty state */
+    .empty {
+        text-align: center;
+        padding: 40px 20px;
+        border: 2px dashed var(--line);
+        border-radius: 14px;
+        color: #5b6580;
+    }
+    .empty strong { display: block; color: var(--ink); font-size: 1.05rem; margin-bottom: 4px; }
+
+    @media (max-width: 520px) {
+        .tasks-head, .tasks-body { padding-left: 22px; padding-right: 22px; }
+        .add-form { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .btn, .task, .add-form input { transition: none; }
+    }
+</style>
+
+<div class="tasks">
+    <header class="tasks-head">
+        <h1>My tasks</h1>
+        <p>{{ tasks|length }} task{{ tasks|length|pluralize }} on your list</p>
+    </header>
+
+    <div class="tasks-body">
+        <form method="post" class="add-form">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="What do you need to do?" aria-label="New task" required>
+            <button class="btn" type="submit">Add task</button>
+        </form>
+
+        {% if tasks %}
+            <h2 class="list-title">Your list</h2>
+            <ul class="task-list">
+                {% for task in tasks %}
+                    <li class="task {% if task.completed %}done{% endif %}">
+                    <span class="dot">{% if task.completed %}✓{% endif %}</span>
+
+                    <a class="task-text" href="{% url 'task_detail' task.id %}">
+                        <strong>{{ task.title }}</strong>
+                        <small>Added {{ task.created_at|date:"d M, h:i A" }}</small>
+                    </a>
+
+                    <form method="post" action="{% url 'task_toggle' task.id %}">
+                        {% csrf_token %}
+                        <button class="mini" type="submit">{% if task.completed %}Undo{% else %}Done{% endif %}</button>
+                    </form>
+
+                    <form method="post" action="{% url 'task_delete' task.id %}">
+                        {% csrf_token %}
+                        <button class="mini danger" type="submit">Delete</button>
+                    </form>
+                </li>
+                                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty">
+                <strong>No tasks yet</strong>
+                Type a task above and press Add task to get started.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
